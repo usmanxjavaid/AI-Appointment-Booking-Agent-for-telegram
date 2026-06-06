@@ -57,6 +57,6 @@ def get_available_dates() -> list:
         if day_name in Config.WORKING_DAYS:
             dates.append({
                 "display": next_day.strftime("%A, %d %B"), # display: "Monday, 27 January"
-                "value": next_day.strftime("%Y-%m-%d") # "vallue": "2036-01-27"
+                "value": next_day.strftime("%Y-%m-%d") # "value": "2036-01-27"
             })
     return dates
