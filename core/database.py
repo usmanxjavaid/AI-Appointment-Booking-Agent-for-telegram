@@ -89,7 +89,7 @@ def save_appointment(telegram_id: int, name: str, phone: str,
         ''', (telegram_id, name, phone, service, date, time_slot,
             datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
         conn.commit()
-        appointment_id =cursor.lastrowid
+        appointment_id = cursor.lastrowid
         logger.info(f"Appointment saved: {name} - {date} {time_slot}")
         return appointment_id
     except Exception as e:
