@@ -19,9 +19,11 @@ class Config:
     # Services
     SERVICES = [
         "General Checkup",
+        "Routine Screenigs"
         "Dental Consultation",
         "Eye Examination",
-        "Blood Test"
+        "Blood Test",
+        "Pschycological Counseling",
     ]
 
     # Available time slots
