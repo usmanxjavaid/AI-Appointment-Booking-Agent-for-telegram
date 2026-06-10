@@ -44,7 +44,7 @@ def init_db():
     
     # status options:
     # confirmed -> appointment is booked
-    # cancellerd -> user cancelled appointment
+    # cancelled -> user cancelled appointment
     # completed -> appointment done
 
     # reminder_sent
@@ -142,7 +142,7 @@ def cancel_appointment(appointment_id: int, telegram_id: int) -> bool:
         success = cursor.rowcount > 0
         if success:
             logger.info(f"Appointment {appointment_id} cancelled")
-            return success
+        return success
     except Exception as e:
         logger.error(f"Failed to cancel appointment: {e}")
         return False
@@ -154,10 +154,10 @@ def get_all_appointments() -> list:
     """Returns all appointments for admin"""
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute(''''
+    cursor.execute('''
         SELECT * FROM appointments
         ORDER BY date ASC, time_slot ASC
-                   ''')
+                   '')
     appointments = cursor.fetchall()
     conn.close()
     return appointments
@@ -171,7 +171,7 @@ def get_upcoming_reminders() -> list:
     cursor = conn.cursor()
     cursor.execute('''
         SELECT * FROM appointments
-        WHERE status = 'confirmed' AND reminder_sent = 0
+        WHERE status = 'confirmed' AND reminder_sent = 0 AND date >= date('now')
     ''')
     appointments = cursor.fetchall()
     conn.close()

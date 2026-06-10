@@ -38,7 +38,7 @@ def validate_phone(phone: str) -> bool:
     is_valid = 7 <= len(digits) <= 15
     if not is_valid:
         logger.warning(f"Invalid phone number: {phone}")
-    return True
+    return is_valid
 
 def get_available_dates() -> list:
     """

@@ -43,7 +43,7 @@ async def send_reminder(bot, appointment):
     try:
         message = (
             f"⏰ *Appointment Reminder!*\n\n"
-            f"Hello *{appointment['name']}!\n\n*"
+            f"Hello *{appointment['name']}!*\n\n"
             f"You have an appointment at *{Config.COMPANY_NAME}* in 1 hour.\n\n"
             f"📋 Service: {appointment['service']}\n"
             f"📅 Date: {appointment['date']}\n"
@@ -56,10 +56,10 @@ async def send_reminder(bot, appointment):
             text=message,
             parse_mode='Markdown'
         )
-        logger.info(f"Reminder sent to {appointment['name']} for {appointment['date']} {appointment['time_Slot']}")
+        logger.info(f"Reminder sent to {appointment['name']} for {appointment['date']} {appointment['time_slot']}")
 
     except Exception as e:
-        logger.error(f"Failed to send reminder to {appointment['telegram_id']:  {e}}")    
+        logger.error(f"Failed to send reminder to {appointment['telegram_id']}:  {e}")    
 
 def start_scheduler(bot):
     """
