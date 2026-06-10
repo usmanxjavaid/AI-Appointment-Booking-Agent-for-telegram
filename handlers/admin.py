@@ -108,7 +108,7 @@ async def cancel_appointment_admin(update: Update, context: ContextTypes.DEFAULT
     Admin can cancel appointment by User ID
     """
     if not is_admin(update):
-        await update.message_reply_text("⛔ Access denied.")
+        await update.message.reply_text("⛔ Access denied.")
         return
     
     if not context.args:

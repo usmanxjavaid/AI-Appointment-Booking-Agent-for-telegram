@@ -343,7 +343,7 @@ async def show_appointments(query, user_id: int):
             f"  🆔 Booking ID: `{appointment['id']}`"
         )
 
-        await query.edit_message_text(msg, parse_mode='Markdown')
+    await query.edit_message_text(msg, parse_mode='Markdown')
 
 # ── Show cancel options ───────────────────────────────────
 async def show_cancel_options(query, user_id: int):
