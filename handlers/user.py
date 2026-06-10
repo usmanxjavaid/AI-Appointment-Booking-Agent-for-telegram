@@ -236,9 +236,22 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif state == WAITING_PHONE:
         await handle_phone(update, context, booking, text, user.id)
     else:
+        # User typed something unexpected
+        # Instead of generic message, use AI to reply smartly
+        from core.ai import get_ai_reply
+
+        # Give AI context about where user currently is
+        context_info = f"User is at state: {state}"
+        if booking.get('service'):
+            context_info += f", selected service: {booking['service']}"
+        if booking.get('date'):
+            context_info += f", selected date: {booking['date']}"
+
+        reply = get_ai_reply(text, context_info)
+
         await update.message.reply_text(
-            "Please use the menu to naviagate.\n"
-            "Type /start to see the main menu."
+            reply + "\n\n_Use the menu buttons to book an appointment._",
+            parse_mode="Markdown"
         )
 
 # ── Name input ────────────────────────────────────────────
