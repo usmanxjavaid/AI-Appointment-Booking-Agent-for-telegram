@@ -157,7 +157,7 @@ def get_all_appointments() -> list:
     cursor.execute('''
         SELECT * FROM appointments
         ORDER BY date ASC, time_slot ASC
-                   '')
+                   ''')
     appointments = cursor.fetchall()
     conn.close()
     return appointments
