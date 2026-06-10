@@ -3,7 +3,8 @@ from telegram.ext import (
     CommandHandler,
     MessageHandler,
     CallbackQueryHandler,
-    filters
+    filters,
+    Application
 )
 from core.logger import logger
 from core.database import init_db
@@ -11,13 +12,22 @@ from core.scheduler import start_scheduler
 from config import Config
 import handlers.user as user
 import handlers.admin as admin
+# from telegram.ext import Application
+import httpx
 
 def main():
     # Initialize database
     init_db()
 
-    # Build application
-    app = Application.builder().token(Config.TELEGRAM_TOKEN).build()
+    app = (
+        Application.builder()
+        .token(Config.TELEGRAM_TOKEN)
+        # .connect_timeout(30)
+        # .read_timeout(30)
+        # .write_timeout(30)
+        # .pool_timeout(30)
+        .build()
+    )
 
     # ── User handlers ──────────────────────────────────────
     app.add_handler(CommandHandler("start", user.start))

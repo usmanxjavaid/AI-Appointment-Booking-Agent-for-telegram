@@ -37,7 +37,7 @@ async def admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # ── Admin button handler ──────────────────────────────────
 async def admin_button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
-    await query.asnwer()
+    await query.answer()
 
     if not is_admin(update):
         await query.edit_message_text('⛔ Access denied.')
@@ -81,7 +81,7 @@ async def show_today_appointments(query):
 
     # Filter only today's appointments from all appointments
     today_appointments = [
-        appointment for appointment in appointments if appointment['date'] == today and appointment['status'] == 'confirmed'
+        appointment for appointment in all_appointments if appointment['date'] == today and appointment['status'] == 'confirmed'
     ]
 
     if not today_appointments:
@@ -102,7 +102,7 @@ async def show_today_appointments(query):
     await query.edit_message_text(msg, parse_mode='Markdown')
 
 # ── /cancelappointment command ────────────────────────────  
-async def cancel_appointment_admin():
+async def cancel_appointment_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
     Usage: /cancelappointment 5
     Admin can cancel appointment by User ID
@@ -132,7 +132,7 @@ async def cancel_appointment_admin():
         conn.commit()
         success = cursor.rowcount > 0
     except Exception as e:
-        logger.error(f"Admin cancel failed: {0}")
+        logger.error(f"Admin cancel failed: {e}")
         success = False
     finally:
         conn.close()

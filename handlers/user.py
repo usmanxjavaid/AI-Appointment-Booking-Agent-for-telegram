@@ -15,7 +15,7 @@ from config import Config
 SELECTING_ACTION = "selecting_action"
 SELECTING_SERVICE = "selecting_service"
 SELECTING_DATE = "selecting_date"
-SELECTING_TIME = "selectig_time"
+SELECTING_TIME = "selecting_time"
 WAITING_NAME = "waiting_name"
 WAITING_PHONE = "waiting_phone"
 DONE = "done"
@@ -56,7 +56,7 @@ def date_keyboard() -> InlineKeyboardMarkup:
     dates = get_available_dates()
     keyboard = []
     for date in dates:
-        keyboard.append([InlineKeyboardButton(date['dsiplay'], callback_data=f"date_{date['value']}")])
+        keyboard.append([InlineKeyboardButton(date['display'], callback_data=f"date_{date['value']}")])
     keyboard.append([InlineKeyboardButton("🔙 Back", callback_data='back_service')])
     return InlineKeyboardMarkup(keyboard)
 
@@ -120,7 +120,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
     elif data == 'action_view':
         await show_appointments(query, user_id)
-    elif data == 'action_view':
+    elif data == 'action_cancel':
         await show_cancel_options(query, user_id)
 
     # ── Service selection ─────────────────────────────────
@@ -132,7 +132,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         logger.info(f"Service selected: {service}")
 
-        await edit_message_text(
+        await query.edit_message_text(
             f"✅ Service *{service}*\n\n"
             "Please select a date:",
             reply_markup=date_keyboard(),
@@ -186,7 +186,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # ── Back buttons ──────────────────────────────────────
     elif data == 'back_main':
         booking['state'] = SELECTING_ACTION
-        await query.edit_messsage_text(
+        await query.edit_message_text(
             'How can i help you today?',
             reply_markup = main_menu_keyboard()
         )
@@ -206,18 +206,19 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
 
     # ── Cancel specific appointment ───────────────────────
-    elif data.startswith('cancel_'):
-       appointment_id = int(data.replace('cancel_',''))
-       success = cancel_appointment(appointment_id, user_id)
+    elif data.startswith("cancel_"):
+        appointment_id = int(data.replace("cancel_", ""))
+        success = cancel_appointment(appointment_id, user_id)
 
-       if success:
-           await query.edit_message_text(
-               f'✅ Your appointment has been cancelled successfully.\n\n'
-               'Type /start to book a new appointment.'
-           )
-    else:
-        await query.edit_message_text('❌ Could not cancel appointment. Please try again.')
-
+        if success:
+            await query.edit_message_text(
+                "✅ Your appointment has been cancelled.\n\n"
+                "Type /start to book a new appointment."
+            )
+        else:
+            await query.edit_message_text(
+                "❌ Could not cancel. Please try again."
+            )
 # ── Message handler ───────────────────────────────────────
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
@@ -283,7 +284,7 @@ async def handle_phone(update, context, booking, text, user_id):
         )
         return
     
-    booking['state'] = text
+    booking['phone'] = text
     booking['state'] = DONE
 
     # save patient data
@@ -295,7 +296,7 @@ async def handle_phone(update, context, booking, text, user_id):
         name=booking['name'],
         phone=text,
         service=booking['service'],
-        date=booking['state'],
+        date=booking['date'],
         time_slot=booking['time_slot']      
     )
 
@@ -308,7 +309,7 @@ async def handle_phone(update, context, booking, text, user_id):
             f"📱 Phone: {text}\n"
             f"🏥 Service: {booking['service']}\n"
             f"📅 Date: {booking['date']}\n"
-            f"🕐 Time: {booking['time_slot']}"
+            f"🕐 Time: {booking['time_slot']}\n"
             f"We'll send you reminder 1 hour before.\n"
             f"See you soon! 🙌",
             parse_mode='Markdown'
@@ -318,7 +319,7 @@ async def handle_phone(update, context, booking, text, user_id):
         await notify_admin(context, booking, user_id, appointment_id)
 
     else:
-        await update.message_reply_text(
+        await update.message.reply_text(
             "⚠️ Something went wrong. Please try again with /start"
         )
 
